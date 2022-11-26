@@ -83,7 +83,7 @@ else
         then
             if _cnf_prompt_yn "No pacman db files in '$db_path', refresh?"
             then
-                _cnf_asroot pacman -Sy >&2
+                pacaur -Sy >&2
             else
                 return 1
             fi
@@ -121,7 +121,7 @@ _cnf_command_packages() {
         fi
         pkgfile --binaries -- "$cmd" 2>/dev/null
     else
-        local pacman_version=$(pacman -Q pacman 2>/dev/null | awk -F'[ -]' '{print $2}')
+        local pacman_version=$(pacaur -Q pacman 2>/dev/null | awk -F'[ -]' '{print $2}')
         local args="-Fq"
         if test $(vercmp "$pacman_version" "5.2.0") -lt 0
         then
@@ -130,9 +130,9 @@ _cnf_command_packages() {
         local db_path=$(_cnf_pacman_db_path)
         if _cnf_need_to_update_files "$db_path"
         then
-            _cnf_asroot pacman -Fy >&2
+            pacaur -Fy >&2
         fi
-        pacman $args "/usr/bin/$cmd" 2>/dev/null
+        pacaur $args "/usr/bin/$cmd" 2>/dev/null
     fi
 }
 
@@ -142,7 +142,7 @@ _cnf_package_files() {
     then
         pkgfile --list "$package" | sed 's/[^[:space:]]*[[:space:]]*//'
     else
-        pacman -Flq "$package"
+        pacaur -Flq "$package"
     fi
 }
 
@@ -213,7 +213,7 @@ else
                     local packages=$1
                     if _cnf_prompt_yn "Would you like to install '$packages'?"
                     then
-                        _cnf_asroot pacman -S "$packages"
+                        pacaur -S "$packages" --noedit --noconfirm
                     else
                         return 127
                     fi
@@ -227,7 +227,7 @@ else
                     if which fzf >/dev/null 2>/dev/null
                     then
                         local package_files=$(_cnf_package_files "$packages")
-                        local package_info=$(pacman -Si "$packages")
+                        local package_info=$(pacaur -Si "$packages")
                         action=$(printf "%s\n" "${_cnf_actions[@]}" | \
                             fzf --preview "echo {} | grep -q '^list' && echo '$package_files' \
                                     || echo '$package_info'" \
@@ -247,10 +247,10 @@ $scroll_header")
 
                 case "$action" in
                     install)
-                        _cnf_asroot pacman -S "$packages"
+                        pacaur -S "$packages" --noedit --noconfirm
                         ;;
                     info)
-                        pacman -Si "$packages"
+                        pacaur -Si "$packages"
                         _cnf_prompt_install "$packages"
                         ;;
                     *)
@@ -270,8 +270,8 @@ $scroll_header")
                     package=$(printf "%s\n" $packages | \
                         fzf --bind="tab:preview(type pkgfile >/dev/null 2>/dev/null && \
                                 pkgfile --list {} | sed 's/[^[:space:]]*[[:space:]]*//' || \
-                                pacman -Flq {})" \
-                            --preview "pacman -Si {}" \
+                                pacaur -Flq {})" \
+                            --preview "pacaur -Si {}" \
                             --header "Press \"tab\" to view files
 $scroll_header" \
                             --prompt "Select a package to install (\"esc\" to abort):")
@@ -283,7 +283,7 @@ $scroll_header" \
                 fi
                 if test -n "$package"
                 then
-                    _cnf_asroot pacman -S "$package"
+                    pacaur -S "$package" --noedit --noconfirm
                 else
                     return 127
                 fi
