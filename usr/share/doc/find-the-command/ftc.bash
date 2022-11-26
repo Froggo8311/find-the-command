@@ -10,6 +10,8 @@ _cnf_verbose=true
 
 _cnf_actions=('install' 'info' 'list files' 'list files (paged)')
 
+SHELL_NAME='bash'
+
 # Parse options
 for opt in "$@"
 do
@@ -23,8 +25,8 @@ do
         info) _cnf_action=${_cnf_actions[@]:1:1} ;;
         list_files) _cnf_action=${_cnf_actions[@]:2:1} ;;
         list_files_paged) _cnf_action=${_cnf_actions[@]:3:1} ;;
-        variant=zsh) command_not_found_handler() { command_not_found_handle "$@"; } ;;
-        *) _cnf_print "find-the-command: unknown option: $opt" ;;
+        variant=zsh) command_not_found_handler() { command_not_found_handle "$@"; }; SHELL_NAME='zsh' ;;
+        *) _cnf_print $(echo "$SHELL_NAME: unknown option: $opt" ;;
     esac
 done
 
@@ -53,7 +55,7 @@ _cnf_asroot() {
 
 _cnf_prompt_yn() {
     local result
-    _cnf_print -n "find-the-command: $1 [Y/n] "
+    _cnf_print -n "$SHELL_NAME: $1 [Y/n] "
     read result || kill -s INT $$
     case "$result" in
         y* | Y* | '')
@@ -146,7 +148,7 @@ if $_cnf_verbose
 then
     _cnf_pre_search_warn() {
         local cmd=$1
-        _cnf_print "find-the-command: \"$cmd\" is not found locally, searching in repositories..."
+        _cnf_print "$SHELL_NAME: \"$cmd\" is not found locally, searching in repositories..."
         return 0
     }
 else
@@ -165,7 +167,7 @@ fi
 
 _cnf_cmd_not_found() {
     local cmd=$1
-    _cnf_print "find-the-command: command not found: \"$cmd\""
+    _cnf_print "$SHELL_NAME: command not found: \"$cmd\""
     return 127
 }
 
@@ -181,11 +183,11 @@ then
                 _cnf_cmd_not_found "$cmd"
                 ;;
             1)
-                _cnf_print "find-the-command: \"$cmd\" may be found in package \"$packages\""
+                _cnf_print "$SHELL_NAME: \"$cmd\" may be found in package \"$packages\""
                 ;;
             *)
                 local package
-                _cnf_print "find-the-command: \"$cmd\" may be found in the following packages:"
+                _cnf_print "$SHELL_NAME: \"$cmd\" may be found in the following packages:"
                 for package in $(echo $packages)
                 do
                     _cnf_print "\t$package"
@@ -218,7 +220,7 @@ else
                 if test -z "$_cnf_action"
                 then
                     local may_be_found="\"$cmd\" may be found in package \"$packages\""
-                    _cnf_print "find-the-command: $may_be_found"
+                    _cnf_print "$SHELL_NAME: $may_be_found"
                     if which fzf >/dev/null 2>/dev/null
                     then
                         local package_files=$(_cnf_package_files "$packages")
@@ -230,7 +232,7 @@ else
                                 --header "$may_be_found
 $scroll_header")
                     else
-                        _cnf_print "find-the-command: What would you like to do? "
+                        _cnf_print "$SHELL_NAME: What would you like to do? "
                         local PS3="$(echo -en "\nAction (0 to abort): ")"
                         select action in "${_cnf_actions[@]}"
                         do break
@@ -264,7 +266,7 @@ $scroll_header")
                 ;;
             *)
                 local package
-                _cnf_print "find-the-command: \"$cmd\" may be found in the following packages:"
+                _cnf_print "$SHELL_NAME: \"$cmd\" may be found in the following packages:"
                 if which fzf >/dev/null 2>/dev/null
                 then
                     for package in $(echo $packages)
