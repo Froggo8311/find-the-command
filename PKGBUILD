@@ -18,7 +18,7 @@ provides=("${pkgname%-git}")
 conflicts=("${pkgname%-git}")
 install="${pkgname%-git}.install"
 options=('docs')
-source=('git+https://github.com/pkasemir/find-the-command.git')
+source=('git+https://github.com/Froggo8311/find-the-command.git')
 sha256sums=('SKIP')
 
 pkgver() {
