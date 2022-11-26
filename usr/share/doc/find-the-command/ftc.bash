@@ -29,7 +29,7 @@ do
             command_not_found_handler() { command_not_found_handle "$@"; }
             SHELL_NAME='zsh'
             ;;
-        *) _cnf_print $(echo "$SHELL_NAME: unknown option: $opt" ;;
+        *) _cnf_print "$SHELL_NAME: unknown option: $opt" ;;
     esac
 done
 
