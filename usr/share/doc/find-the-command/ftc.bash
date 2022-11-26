@@ -25,7 +25,10 @@ do
         info) _cnf_action=${_cnf_actions[@]:1:1} ;;
         list_files) _cnf_action=${_cnf_actions[@]:2:1} ;;
         list_files_paged) _cnf_action=${_cnf_actions[@]:3:1} ;;
-        variant=zsh) command_not_found_handler() { command_not_found_handle "$@"; }; SHELL_NAME='zsh' ;;
+        variant=zsh)
+            command_not_found_handler() { command_not_found_handle "$@"; }
+            SHELL_NAME='zsh'
+            ;;
         *) _cnf_print $(echo "$SHELL_NAME: unknown option: $opt" ;;
     esac
 done
