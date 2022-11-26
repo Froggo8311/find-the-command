@@ -170,7 +170,7 @@ fi
 
 _cnf_cmd_not_found() {
     local cmd=$1
-    _cnf_print "$SHELL_NAME: command not found: \"$cmd\""
+    _cnf_print "$SHELL_NAME: command not found: $cmd"
     return 127
 }
 
