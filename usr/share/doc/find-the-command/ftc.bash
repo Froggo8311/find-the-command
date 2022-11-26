@@ -8,7 +8,7 @@ _cnf_noprompt=false
 _cnf_noupdate=false
 _cnf_verbose=true
 
-_cnf_actions=('install' 'info' 'list files' 'list files (paged)')
+_cnf_actions=('install' 'info')
 
 SHELL_NAME='bash'
 
@@ -235,7 +235,7 @@ else
                                 --header "$may_be_found
 $scroll_header")
                     else
-                        _cnf_print "$SHELL_NAME: What would you like to do? "
+                        _cnf_print "$SHELL_NAME: Choose an option? "
                         local PS3="$(echo -en "\nAction (0 to abort): ")"
                         select action in "${_cnf_actions[@]}"
                         do break
@@ -251,15 +251,6 @@ $scroll_header")
                         ;;
                     info)
                         pacman -Si "$packages"
-                        _cnf_prompt_install "$packages"
-                        ;;
-                    'list files')
-                        _cnf_package_files "$packages"
-                        _cnf_prompt_install "$packages"
-                        ;;
-                    'list files (paged)')
-                        test -z "$PAGER" && local PAGER=less
-                        _cnf_package_files "$packages" | "$PAGER"
                         _cnf_prompt_install "$packages"
                         ;;
                     *)
