@@ -213,7 +213,7 @@ else
                     local packages=$1
                     if _cnf_prompt_yn "Would you like to install '$packages'?"
                     then
-                        pacaur -S "$packages" --noedit --noconfirm
+                        pacaur -S "$packages" --noedit --noconfirm >/dev/null
                     else
                         return 127
                     fi
@@ -247,7 +247,7 @@ $scroll_header")
 
                 case "$action" in
                     install)
-                        pacaur -S "$packages" --noedit --noconfirm
+                        pacaur -S "$packages" --noedit --noconfirm >/dev/null
                         ;;
                     info)
                         pacaur -Si "$packages"
@@ -283,7 +283,7 @@ $scroll_header" \
                 fi
                 if test -n "$package"
                 then
-                    pacaur -S "$package" --noedit --noconfirm
+                    pacaur -S "$package" --noedit --noconfirm >/dev/null
                 else
                     return 127
                 fi
